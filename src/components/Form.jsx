@@ -11,15 +11,32 @@ const Form = () => {
     email: '',
     password: ''
   });
+  const [loading,setLoading] = useState(false);
 
   const handleLogin = (e) =>{
-    e.preventDefault();
-    console.log('SIGN IN CORRECT');
+      
   } ;
   
   const handleRegister = async (e) =>{
     e.preventDefault();
-    console.log('SIGN UP CORRECT');
+    try {
+        setLoading(true);
+        const res = await fetch('/api/user/register',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        });
+
+        const data = await res.json();
+        if(!data) setLoading(false);
+        setLoading(false);
+        navigate('/');
+    }catch(error){
+        setLoading(false);
+        console.log(error);   
+    }
   };
   
   return (
@@ -75,24 +92,26 @@ const Form = () => {
                 { location.pathname === '/sign-up' ? 
                     <>
                         <button 
+                            disabled={loading}
                             type='submit' 
                             onClick={handleRegister}
                             className='bg-violet-500 text-white text-lg font-bold text-center
                             rounded-xl py-3 active:scale-[.98] active:duration-75 transition-all
                             hover:scale-[1.01] ease-in-out uppercase'
                         >
-                            Sign Up
+                            {loading ? 'Loading...' : 'Sign Up'}
                         </button>
                     </>
                     :   
                     <>
                         <button 
+                            disabled={loading}
                             type='submit' onClick={handleLogin}
                             className='bg-violet-500 text-white text-lg font-bold text-center
                             rounded-xl py-3 active:scale-[.98] active:duration-75 transition-all
                             hover:scale-[1.01] ease-in-out uppercase'
                         >
-                            Sign In
+                            {loading ? 'Loading...' : 'Sign In'}
                         </button>
                     </>
                 }
