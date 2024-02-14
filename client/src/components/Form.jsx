@@ -5,6 +5,7 @@ const Form = () => {
     
   const location = useLocation();
   const navigate = useNavigate();
+  const URL = process.env.REACT_APP_BACKEND_URL;
 
   const [user, setUser] = useState({
     name: '',
@@ -13,15 +14,36 @@ const Form = () => {
   });
   const [loading,setLoading] = useState(false);
 
-  const handleLogin = (e) =>{
-      
+  const handleLogin = async (e) =>{
+      e.preventDefault();
+      try{
+        setLoading(true);
+        const res = fetch(`${URL}/api/user/login`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringfy(user),
+        });
+
+        const data = await res.json();
+        if(!data){
+            setLoading(false);
+            return;
+        }
+        setLoading(false);
+        navigate('/upload');
+      } catch(error){
+        setLoading(false);
+        console.log(error.message); 
+      }
   } ;
   
   const handleRegister = async (e) =>{
     e.preventDefault();
     try {
         setLoading(true);
-        const res = await fetch('/api/user/register',{
+        const res = await fetch(`${URL}/api/user/register`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,12 +52,15 @@ const Form = () => {
         });
 
         const data = await res.json();
-        if(!data) setLoading(false);
+        if(!data){
+            setLoading(false);
+            return;
+        }
         setLoading(false);
         navigate('/');
     }catch(error){
         setLoading(false);
-        console.log(error);   
+        console.log(error.message);   
     }
   };
   
@@ -62,7 +87,6 @@ const Form = () => {
                     value={user.name}
                     onChange={(e) => setUser({...user, name: e.target.value})}
                     placeholder='Enter your name'
-                    required
                 />
             </div> : null
             }
@@ -74,7 +98,6 @@ const Form = () => {
                     value={user.email}
                     onChange={(e) => setUser({...user, email: e.target.value})}
                     placeholder='Enter your email'
-                    required
                 />
             </div>
             <div>
@@ -85,7 +108,6 @@ const Form = () => {
                     value={user.password}
                     onChange={(e) => setUser({...user, password: e.target.value})}
                     placeholder='Enter your password'
-                    required
                 />
             </div>
             <div className='mt-8 flex flex-col gap-y-4'>

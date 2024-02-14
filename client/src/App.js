@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Form from './components/Form.jsx';
+import Upload from './components/Upload.jsx';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
         <Routes>
           <Route exact path='/' element ={<Form />} />
           <Route path='/sign-up' element ={<Form />} />
+          <Route path='/upload' element ={<Upload />} />
         </Routes>
       </div>
       <div className='hidden relative lg:flex h-full w-1/2 items-center justify-center
