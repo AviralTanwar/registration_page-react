@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import OAuth from './OAuth';
+import { useDispatch} from 'react-redux';
+import { signInSuccess, signInFailure, signInStart} from '../redux/user/userSlice.js';
 
 const Form = () => {
     
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const URL = process.env.REACT_APP_BACKEND_URL;
@@ -13,12 +16,12 @@ const Form = () => {
     email: '',
     password: ''
   });
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) =>{
       e.preventDefault();
       try{
-        setLoading(true);
+        dispatch(signInStart());
         const res = fetch(`${URL}/api/user/login`,{
             method: 'POST',
             headers: {
@@ -27,19 +30,15 @@ const Form = () => {
             body: JSON.stringify(user),
         });
         
-        res.then(data =>{
-            navigate('/upload');
-        })
-        // const data = await res.json();
-        // if(!data){
-        //     setLoading(false);
-        //     return;
-        // }
-        // setLoading(false);
-        // navigate('/upload');
+        const data = await res.json();
+        if(data.success === false){
+            dispatch(signInFailure(data.message));
+            return;
+        }
+        dispatch(signInSuccess(data));
+        navigate('/upload');
       } catch(error){
-        setLoading(false);
-        console.log(error.message); 
+        dispatch(signInFailure(error.message));
       }
   } ;
   
@@ -61,6 +60,7 @@ const Form = () => {
             return;
         }
         setLoading(false);
+        dispatch(signInSuccess(data));
         navigate('/');
     }catch(error){
         setLoading(false);
