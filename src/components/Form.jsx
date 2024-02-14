@@ -1,16 +1,61 @@
-import React from 'react';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Form = () => {
+    
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
+  const handleLogin = (e) =>{
+    e.preventDefault();
+    console.log('SIGN IN CORRECT');
+  } ;
+  
+  const handleRegister = async (e) =>{
+    e.preventDefault();
+    console.log('SIGN UP CORRECT');
+  };
+  
   return (
     <div className='bg-white px-10 py-20 rounded-3xl border-2 border-gray-100'>
-        <h1 className='text-5xl font-semibold'>Welcome Back!</h1>
-        <p className='font-medium text-lg text-gray-500 mt-4'>Welcome back! Please enter your details</p>
-        <form className='mt-8 '>
+        { location.pathname === '/sign-up' ? (
+            <>
+                <h1 className='text-5xl font-semibold login_head'>Hello {user.name}!</h1>
+                <p className='font-medium text-lg text-gray-500 mt-4'> Please enter your details</p>
+            </>
+            ): (
+            <>   
+                <h1 className='text-5xl font-semibold'>Welcome Back!</h1>
+                <p className='font-medium text-lg text-gray-500 mt-4'>Welcome back! Please enter your details</p>
+            </>
+        )}
+        <form className='mt-8'>
+            { location.pathname === '/sign-up' ?
+            <div>
+                <label className='text-lg font-medium'>Name</label>
+                <input 
+                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent mb-1'
+                    type='text'
+                    value={user.name}
+                    onChange={(e) => setUser({...user, name: e.target.value})}
+                    placeholder='Enter your name'
+                    required
+                />
+            </div> : null
+            }
             <div>
                 <label className='text-lg font-medium'>Email</label>
                 <input 
-                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
+                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent mb-2'
                     type='email'
+                    value={user.email}
+                    onChange={(e) => setUser({...user, email: e.target.value})}
                     placeholder='Enter your email'
                     required
                 />
@@ -18,26 +63,39 @@ const Form = () => {
             <div>
                 <label className='text-lg font-medium'>Password</label>
                 <input 
-                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent'
+                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent mb-2'
                     type='password'
+                    value={user.password}
+                    onChange={(e) => setUser({...user, password: e.target.value})}
                     placeholder='Enter your password'
                     required
                 />
             </div>
-            {/* <div className='mt-8 flex justify-between'>
-                <div>
-                    <label for='remember' className='ml-2 font-medium text-base'>Don't have an account?</label>
-                </div>
-                <button className='font-medium text-xl text-violet-500'>Sign Up</button>
-            </div> */}
             <div className='mt-8 flex flex-col gap-y-4'>
-                <button 
-                    className='bg-violet-500 text-white text-lg font-bold 
-                    rounded-xl py-3 active:scale-[.98] active:duration-75 transition-all
-                    hover:scale-[1.01] ease-in-out uppercase'
-                >
-                    Sign In
-                </button>
+                { location.pathname === '/sign-up' ? 
+                    <>
+                        <button 
+                            type='submit' 
+                            onClick={handleRegister}
+                            className='bg-violet-500 text-white text-lg font-bold text-center
+                            rounded-xl py-3 active:scale-[.98] active:duration-75 transition-all
+                            hover:scale-[1.01] ease-in-out uppercase'
+                        >
+                            Sign Up
+                        </button>
+                    </>
+                    :   
+                    <>
+                        <button 
+                            type='submit' onClick={handleLogin}
+                            className='bg-violet-500 text-white text-lg font-bold text-center
+                            rounded-xl py-3 active:scale-[.98] active:duration-75 transition-all
+                            hover:scale-[1.01] ease-in-out uppercase'
+                        >
+                            Sign In
+                        </button>
+                    </>
+                }
                 <button 
                     className='flex items-center justify-center gap-2
                     active:scale-[.98] active:duration-75 transition-all rounded-xl
@@ -53,8 +111,15 @@ const Form = () => {
                 </button>
             </div>
             <div className=' mt-8 flex justify-center items-center '>
-                <p className='font-medium text-base'>Don't have an account?</p>
-                <button className='text-violet-500 text-xl font-medium ml-2'>Sign up</button>
+                <p className='font-medium text-base'>
+                    { location.pathname === '/sign-up' ? 'Already have an account?' : `Don't have an account?`} 
+                </p>
+                <Link to={location.pathname === '/sign-up' ? '/' : '/sign-up'}>
+                    <button 
+                        className='text-violet-500 text-xl font-medium ml-2'>
+                        {location.pathname === '/sign-up' ? 'Sign In' : 'Sign Up'}
+                    </button>
+                </Link>
             </div>
         </form>
     </div>
