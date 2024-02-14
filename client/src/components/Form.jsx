@@ -23,16 +23,19 @@ const Form = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringfy(user),
+            body: JSON.stringify(user),
         });
-
-        const data = await res.json();
-        if(!data){
-            setLoading(false);
-            return;
-        }
-        setLoading(false);
-        navigate('/upload');
+        
+        res.then(data =>{
+            navigate('/upload');
+        })
+        // const data = await res.json();
+        // if(!data){
+        //     setLoading(false);
+        //     return;
+        // }
+        // setLoading(false);
+        // navigate('/upload');
       } catch(error){
         setLoading(false);
         console.log(error.message); 
@@ -87,6 +90,7 @@ const Form = () => {
                     value={user.name}
                     onChange={(e) => setUser({...user, name: e.target.value})}
                     placeholder='Enter your name'
+                    required
                 />
             </div> : null
             }
@@ -98,6 +102,7 @@ const Form = () => {
                     value={user.email}
                     onChange={(e) => setUser({...user, email: e.target.value})}
                     placeholder='Enter your email'
+                    required
                 />
             </div>
             <div>
@@ -108,6 +113,7 @@ const Form = () => {
                     value={user.password}
                     onChange={(e) => setUser({...user, password: e.target.value})}
                     placeholder='Enter your password'
+                    required
                 />
             </div>
             <div className='mt-8 flex flex-col gap-y-4'>
