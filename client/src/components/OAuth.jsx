@@ -1,10 +1,14 @@
 import {GoogleAuthProvider, getAuth, signInWithPopup} from 'firebase/auth';
 import {app} from '../firebase.js';
+import {useDispatch} from 'react-redux';
+import {signInSuccess} from '../redux/user/userSlice.js';
 import {useNavigate} from 'react-router-dom';
+import axios from "axios";
 
 const OAuth = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const URL = process.env.REACT_APP_BACKEND_URL;
 
     const handleGoogleClick = async () =>{
@@ -14,16 +18,16 @@ const OAuth = () => {
 
             const result = await signInWithPopup(auth, provider);
 
-            const res = await fetch(`${URL}/api/user/google`,{
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: result.user.displayName, email: result.user.email, photo:result.user.photoURL}),
-              });
-        
-              const data = await res.json();
-              navigate('/upload');
+            const res = await axios.post(`${URL}/api/user/google`,{
+              name: result.user.displayName,
+              email: result.user.email,
+              photo: result.user.photoURL
+            } );
+            console.log(res);
+            const data = res.data;
+
+            dispatch(signInSuccess(data));
+            navigate('/upload');
         } catch(error){
             console.log('Could not sign in with Google', error);
         }

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import OAuth from './OAuth';
 import { useDispatch} from 'react-redux';
 import { signInSuccess, signInFailure, signInStart} from '../redux/user/userSlice.js';
+import axios from "axios";
 
 const Form = () => {
     
@@ -22,15 +23,9 @@ const Form = () => {
       e.preventDefault();
       try{
         dispatch(signInStart());
-        const res = fetch(`${URL}/api/user/login`,{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user),
-        });
-        
-        const data = await res.json();
+        const res = await axios.post(`${URL}/api/user/login`, user);
+        const data = res.data;
+
         if(data.success === false){
             dispatch(signInFailure(data.message));
             return;
@@ -78,7 +73,7 @@ const Form = () => {
             ): (
             <>   
                 <h1 className='text-5xl font-semibold'>Welcome Back!</h1>
-                <p className='font-medium text-lg text-gray-500 mt-4'>Welcome back! Please enter your details</p>
+                <p className='font-medium text-lg text-center text-gray-500 mt-4'>Please enter your details</p>
             </>
         )}
         <form className='mt-8'>
