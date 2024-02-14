@@ -5,5 +5,6 @@ TECH STACK: ReactJS, Node.js, Express.js, MongoDB, Google Firebase, Tailwind CSS
 
 - Used jwt or jason web token for authentication
 - Used Google Firebase for Google OAuth and storing images
+- Used MongoDB for storing user data
 - Used redux for global state management
 - Used tailwind CSS for UI
