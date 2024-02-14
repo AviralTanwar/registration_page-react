@@ -11,26 +11,29 @@ const OAuth = () => {
     const dispatch = useDispatch();
     const URL = process.env.REACT_APP_BACKEND_URL;
 
-    const handleGoogleClick = async () =>{
-        try{
-            const provider = new GoogleAuthProvider();
-            const auth = getAuth(app);
-
-            const result = await signInWithPopup(auth, provider);
-
-            const res = await axios.post(`${URL}/api/user/google`,{
-              name: result.user.displayName,
-              email: result.user.email,
-              photo: result.user.photoURL
-            } );
-            console.log(res);
-            const data = res.data;
-
-            dispatch(signInSuccess(data));
-            navigate('/upload');
-        } catch(error){
-            console.log('Could not sign in with Google', error);
-        }
+    const handleGoogleClick = async () => {
+      try {
+  
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth(app)
+  
+        const result = await signInWithPopup(auth, provider);
+        
+        const res = await fetch('api/auth/google',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: result.user.displayName, email: result.user.email, photo:result.user.photoURL}),
+        });
+  
+        // const data = await res.json();
+        // dispatch(signInSuccess(data));
+        navigate('/upload');
+      } catch(error){
+        console.log('Could not sign in with google', error);
+      }
+  
     }
 
   return (

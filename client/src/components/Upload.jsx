@@ -151,7 +151,7 @@ const handleRemoveImage = (index) =>{
                 </div>
                 <button 
                     type='submit'
-                    onSubmit={handleSignOut}
+                    onClick={handleSignOut}
                     className='p-3 bg-pink-700 text-white rounded-lg w-[450px]
                     uppercase hover:opacity-90 disabled:opacity-80 mt-3 sm:w-[461px]'>
                     Sign Out
