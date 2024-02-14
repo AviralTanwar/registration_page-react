@@ -5,12 +5,14 @@ import {useNavigate} from 'react-router-dom';
 
 const Upload = () => {
 
+  const URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
   const [imageUploadError,setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [files,setFiles] = useState([]);
+  const [success,setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     imageURLs: []
   });
@@ -72,10 +74,23 @@ const handleSubmit = async (e) =>{
       setLoading(true);
       setError(false);
 
-      navigate(`/listing`);
   } catch(error){
       setError(error.message);
       setLoading(false);
+  }
+}
+
+const handleSignOut = async () =>{
+  try {
+    const res = await fetch(`${URL}/api/user/logout`);  // Default method is GET
+    const data = res.json();
+    if(data.success === false){
+      return;
+    }
+    navigate('/');
+
+  } catch(error){
+    console.log(error);
   }
 }
 
@@ -125,14 +140,22 @@ const handleRemoveImage = (index) =>{
                 }
                 <button 
                     type='submit'
-                    onClick={handleSubmit}
+                    onClick={() => setSuccess(!success)}
                     disabled={loading || uploading} 
                     className='p-3 bg-violet-700 text-white rounded-lg
-                    uppercase hover:opacity-90 disabled:opacity-80'>
+                    uppercase hover:opacity-90 disabled:opacity-80 w-[450px] sm:w-[461px]'>
                     {loading ? 'Uploading...' : 'Upload'}
                 </button>
                 {error && <p className='text-red-700 text-sm'>{error}</p>}
+                { success && <p className='font-medium text-lg text-gray-500 mt-4 text-center'>Image uploaded successfully</p>}
                 </div>
+                <button 
+                    type='submit'
+                    onSubmit={handleSignOut}
+                    className='p-3 bg-pink-700 text-white rounded-lg w-[450px]
+                    uppercase hover:opacity-90 disabled:opacity-80 mt-3 sm:w-[461px]'>
+                    Sign Out
+                </button>
         </div>
       </div>
     </div>
